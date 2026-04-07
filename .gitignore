@@ -57,4 +57,5 @@ Thumbs.db
 /build
 /captures
 .externalNativeBuild
-
+.vscode/
+docs/

@@ -70,7 +70,7 @@ android {
             dimension "version"
             applicationIdSuffix ".dev"
             ext {
-                server = [debug: "http://localhost:8762/", release: "http://localhost:8762/"]
+                server = [debug: "http://192.168.1.77:8762/", release: "http://192.168.1.77:8762/"]
                 admin = [debug: "http://localhost/",release: "http://localhost/"]
                 salt = [debug: "spice_opensource", release: "spice_opensource"]
             }
@@ -168,7 +168,7 @@ dependencies {
 
     implementation 'net.zetetic:android-database-sqlcipher:4.5.2'
     implementation 'androidx.sqlite:sqlite-ktx:2.3.0'
-    implementation 'com.github.jeffreyliu8:FlexBoxRadioGroup:0.0.8'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'org.bitbucket.b_c:jose4j:0.9.1'
