@@ -30,6 +30,11 @@
             android:title="@string/privacy_policy" />
 
         <item
+            android:id="@+id/chwAssistant"
+            android:title="@string/chw_assistant"
+            android:visible="false" />
+
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_logout"
             android:title="@string/logout" />

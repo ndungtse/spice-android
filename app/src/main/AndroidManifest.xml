@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.medtroniclabs.opensource">
 
+    <uses-sdk tools:overrideLibrary="com.medtroniclabs.microcoaching,com.google.mediapipe.tasks.genai" />
+
     <permission
         android:name="${applicationId}.permission.INTERNAL_ACTIVITY"
         android:protectionLevel="signature" /> <!-- Required for foreground services on P+. -->
@@ -86,6 +88,11 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
             android:permission="${applicationId}.permission.INTERNAL_ACTIVITY"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.medtroniclabs.opensource.ui.coaching.CoachingAssistantActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.medtroniclabs.opensource.ui.medicalreview.TreatmentPlanActivity"

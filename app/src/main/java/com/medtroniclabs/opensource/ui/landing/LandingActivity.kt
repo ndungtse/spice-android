@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
+import com.medtroniclabs.microcoaching.Language
+import com.medtroniclabs.microcoaching.MicroCoachingSDK
+import com.medtroniclabs.opensource.ui.coaching.CoachingAssistantActivity
 import com.medtroniclabs.opensource.BuildConfig
 import com.medtroniclabs.opensource.R
 import com.medtroniclabs.opensource.appextensions.safeClickListener
@@ -73,6 +76,7 @@ class LandingActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
         onNavigationItemSelected(binding.navView.menu.findItem(R.id.home))
 
         viewModel.validateSession()
+        reinitCoachingSdkWithToken()
         // To Show the language preferences in side menu to Comment it
 //        hideCultureMenu()
     }
@@ -424,6 +428,9 @@ class LandingActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
                     ) {}
                 }
             }
+            R.id.chwAssistant -> {
+                CoachingAssistantActivity.launch(this)
+            }
         }
     }
 
@@ -482,6 +489,9 @@ class LandingActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
         super.onResume()
         checkOfflineDataAvailability()
         doRefreshForDataUpdate()
+        if (MicroCoachingSDK.isInitialized() && connectivityManager.isNetworkAvailable()) {
+            MicroCoachingSDK.getInstance().onConnectivityRestored()
+        }
     }
 
     private fun doRefreshForDataUpdate() {
@@ -513,6 +523,20 @@ class LandingActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
 
     private fun fetchUserMenuList(roleName: String) {
         viewModel.getUserMenuListByRole(roleName)
+    }
+
+    private fun reinitCoachingSdkWithToken() {
+        val token = SecuredPreference.getString(SecuredPreference.EnvironmentKey.TOKEN.name)
+        if (token.isNullOrEmpty() || !MicroCoachingSDK.isInitialized()) return
+        MicroCoachingSDK.Builder(applicationContext)
+            .language(Language.BANGLA)
+            .backendUrl(BuildConfig.COACHING_BACKEND_URL)
+            .authToken(token)
+            .enableTelemetry(BuildConfig.ENABLE_COACHING_TELEMETRY)
+            .enableChat(true)
+            .build()
+        MicroCoachingSDK.getInstance().syncCoordinator.schedulePeriodic()
+        binding.navView.menu.findItem(R.id.chwAssistant)?.isVisible = true
     }
 
     private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {

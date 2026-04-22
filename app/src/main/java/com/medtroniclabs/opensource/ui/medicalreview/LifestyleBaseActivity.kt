@@ -200,7 +200,7 @@ class LifestyleBaseActivity : BaseActivity(), View.OnClickListener, LifeStyleInt
         binding.bottomSheet.btnBack.safeClickListener(this)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent?.getLongExtra(IntentConstants.IntentPatientID, -1)
             ?.let { viewModel.patientTrackId = it }

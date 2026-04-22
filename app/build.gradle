@@ -1,15 +1,22 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
     id "org.sonarqube" version "3.4.0.2513"
     id 'org.jetbrains.kotlin.android'
 }
 
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) localProps.load(localPropsFile.newDataInputStream())
+
+
+
 android {
-    compileSdk 33
+    namespace "com.medtroniclabs.opensource"
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.medtroniclabs.opensource"
@@ -19,6 +26,10 @@ android {
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "COACHING_BACKEND_URL",
+            "\"${localProps.getProperty('COACHING_BACKEND_URL', 'http://10.0.2.2:8080')}\""
+        buildConfigField "boolean", "ENABLE_COACHING_TELEMETRY", "false"
     }
 
     signingConfigs {
@@ -52,9 +63,10 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
-    lintOptions {
+    lint {
         checkReleaseBuilds false
     }
 
@@ -70,8 +82,8 @@ android {
             dimension "version"
             applicationIdSuffix ".dev"
             ext {
-                server = [debug: "http://192.168.1.77:8762/", release: "http://192.168.1.77:8762/"]
-                admin = [debug: "http://localhost/",release: "http://localhost/"]
+                server = [debug: "https://stork-cute-chipmunk.ngrok-free.app", release: "https://stork-cute-chipmunk.ngrok-free.app"]
+                admin = [debug: "http://192.168.1.72:3000/",release: "http://192.168.1.72:3000/"]
                 salt = [debug: "spice_opensource", release: "spice_opensource"]
             }
             signingConfig signingConfigs.development
@@ -126,14 +138,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.core:core-ktx:1.9.0'
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    ksp "com.google.dagger:hilt-compiler:$hilt_version"
 
-    def room_version = '2.5.0'
+    def room_version = '2.7.0'
 
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    // To use Kotlin annotation processing tool (kapt)
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
     // Kotlin coroutine dependencies
@@ -176,5 +186,8 @@ dependencies {
     //in-app update
     implementation 'com.google.android.play:app-update:2.0.1'
     implementation 'com.google.android.play:app-update-ktx:2.0.1'
+
+    // MicroCoaching SDK (composite build — sourced from ../micro-coaching-android-sdk)
+    implementation 'com.medtroniclabs.microcoaching:sdk-android:0.1.0-SNAPSHOT'
 }
 

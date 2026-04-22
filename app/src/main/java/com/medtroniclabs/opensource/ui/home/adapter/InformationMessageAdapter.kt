@@ -75,7 +75,7 @@ class InformationMessageAdapter(
             }
             else -> {
                 informationTextBuilder = SpannableStringBuilder(
-                    context.getString(R.string.information_message_template,model.patient.firstName,model.transferSite?.name?:"",model.transferStatus.toLowerCase())
+                    context.getString(R.string.information_message_template,model.patient.firstName,model.transferSite?.name?:"",model.transferStatus.lowercase())
                 )
             }
         }

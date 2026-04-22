@@ -70,7 +70,7 @@ class LabTestCreateActivity : BaseActivity(), View.OnClickListener, LabTestInter
         binding.llSearch.etSearch.addTextChangedListener(textWatcher)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent?.getLongExtra(IntentConstants.IntentPatientID, -1)?.let {
             viewModel.patientTrackId = it

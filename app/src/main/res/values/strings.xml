@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">SPICE</string>
+    <string name="today_s_coaching">Today\'s Coaching</string>
+    <string name="chw_assistant">CHW Assistant</string>
     <string name="loading">loading.....</string>
     <!--    // login related strings-->
     <string name="welcome">Welcome</string>

@@ -24,6 +24,17 @@ class Converters {
     }
 
     @TypeConverter
+    fun fromStringNonNull(value: String?): ArrayList<LifeStyleAnswer> {
+        val listType: Type = object : TypeToken<ArrayList<LifeStyleAnswer>>() {}.type
+        return Gson().fromJson(value, listType) ?: ArrayList()
+    }
+
+    @TypeConverter
+    fun fromArrayListNonNull(list: ArrayList<LifeStyleAnswer>): String? {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
     fun fromArrayListToString(list: ArrayList<String?>?): String? {
         return Gson().toJson(list)
     }

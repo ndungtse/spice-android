@@ -61,6 +61,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/clRedRisk" />
 
+            <FrameLayout
+                android:id="@+id/coaching_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/llRoot" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDoneSummary"
                 style="@style/Button_Style"
@@ -69,7 +78,7 @@
                 android:paddingHorizontal="@dimen/_20sdp"
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="@string/done"
-                app:layout_constraintTop_toBottomOf="@id/llRoot"
+                app:layout_constraintTop_toBottomOf="@id/coaching_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

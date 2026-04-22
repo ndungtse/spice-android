@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.medtroniclabs.microcoaching.MicroCoachingSDK
+import com.medtroniclabs.microcoaching.ui.flow.CoachingFlowActivity
 import com.medtroniclabs.opensource.R
 import com.medtroniclabs.opensource.custom.SecuredPreference
 import com.medtroniclabs.opensource.databinding.FragmentHomeScreenBinding
@@ -51,6 +53,17 @@ class HomeScreenFragment : BaseFragment(), MenuSelectionListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         attachObserver()
+        setupCoachingCard()
+    }
+
+    private fun setupCoachingCard() {
+        if (!MicroCoachingSDK.isInitialized()) return
+        val chwId = try { SecuredPreference.getUserId().toString() } catch (e: Exception) { "" }
+        MicroCoachingSDK.getInstance().onHomeScreenShown(chwId)
+        binding.btnTodaysCoaching.visibility = View.VISIBLE
+        binding.btnTodaysCoaching.setOnClickListener {
+            CoachingFlowActivity.launchLearnModule(requireContext(), chwId)
+        }
     }
 
     private fun attachObserver() {

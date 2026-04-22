@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.medtroniclabs.microcoaching.MicroCoachingSDK
 import com.medtroniclabs.opensource.R
 import com.medtroniclabs.opensource.databinding.ActivityAssessmentHolderBinding
 import com.medtroniclabs.opensource.formgeneration.definedproperties.DefinedParams
@@ -73,6 +74,12 @@ class AssessmentHolderActivity : BaseActivity() {
                 }
                 ResourceState.SUCCESS -> {
                     hideLoading()
+                    if (MicroCoachingSDK.isInitialized()) {
+                        MicroCoachingSDK.getInstance().onAssessmentSubmitted(
+                            encounterId = "",
+                            patientId = patientDetailViewModel.patientId?.toString() ?: ""
+                        )
+                    }
                     loadFragment(2)
                 }
             }
