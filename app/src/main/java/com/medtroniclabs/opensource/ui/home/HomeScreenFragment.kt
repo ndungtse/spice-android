@@ -1,10 +1,14 @@
 package com.medtroniclabs.opensource.ui.home
 
 import android.content.Intent
+import android.net.ConnectivityManager as AndroidConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.flexbox.FlexDirection
@@ -57,18 +61,63 @@ class HomeScreenFragment : BaseFragment(), MenuSelectionListener {
     }
 
     private fun setupCoachingCard() {
+        val sdk = MicroCoachingSDK.getInstance()
+        val chwId = runCatching { SecuredPreference.getUserId().toString() }.getOrDefault("")
+        sdk.onHomeScreenShown(chwId)
+
         binding.btnTodaysCoaching.visibility = View.VISIBLE
         binding.btnTodaysCoaching.setOnClickListener {
-            MorningCoachingCardFragment.show(parentFragmentManager)
+            val cards = sdk.morningCards.value
+            if (cards.isEmpty()) {
+                Toast.makeText(requireContext(), "আজকের পরামর্শ এখনও প্রস্তুত নয়", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            CoachingCardBottomSheet.show(parentFragmentManager, scenarioId = cards.first().scenarioId, autoSpeak = true)
         }
+
         binding.btnChatAssistant.visibility = View.VISIBLE
         binding.btnChatAssistant.setOnClickListener {
-            CoachingAssistantActivity.launch(requireContext())
+            if (sdk.modelManager.isModelPresent()) {
+                CoachingAssistantActivity.launch(requireContext())
+            } else {
+                showModelDownloadPrompt(onDownloadStarted = { CoachingAssistantActivity.launch(requireContext()) })
+            }
         }
-        if (MicroCoachingSDK.isInitialized()) {
-            val chwId = try { SecuredPreference.getUserId().toString() } catch (e: Exception) { "" }
-            MicroCoachingSDK.getInstance().onHomeScreenShown(chwId)
-        }
+    }
+
+    private fun showModelDownloadPrompt(onDownloadStarted: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("AI মডেল প্রয়োজন")
+            .setMessage("AI মডেল ডাউনলোড করতে হবে (~800 MB)। ডাউনলোড করবেন?")
+            .setPositiveButton("হ্যাঁ") { _, _ ->
+                if (isOnMeteredNetwork()) {
+                    showMeteredNetworkWarning(onDownloadStarted)
+                } else {
+                    triggerDownloadAndProceed(onDownloadStarted)
+                }
+            }
+            .setNegativeButton("না", null)
+            .show()
+    }
+
+    private fun showMeteredNetworkWarning(onDownloadStarted: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("মোবাইল ডেটা")
+            .setMessage("আপনি মোবাইল ডেটায় আছেন। ~800 MB ডেটা ব্যবহার হবে। চালিয়ে যাবেন?")
+            .setPositiveButton("হ্যাঁ") { _, _ -> triggerDownloadAndProceed(onDownloadStarted) }
+            .setNegativeButton("না", null)
+            .show()
+    }
+
+    private fun triggerDownloadAndProceed(onDownloadStarted: () -> Unit) {
+        MicroCoachingSDK.getInstance().modelManager.triggerDownload()
+        onDownloadStarted()
+    }
+
+    private fun isOnMeteredNetwork(): Boolean {
+        val cm = requireContext().getSystemService(AndroidConnectivityManager::class.java)
+        val caps = cm?.getNetworkCapabilities(cm.activeNetwork) ?: return false
+        return !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
     }
 
     private fun attachObserver() {

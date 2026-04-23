@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.medtroniclabs.microcoaching.ai.voice.BanglaTtsHelper
 import com.medtroniclabs.opensource.databinding.FragmentMorningCoachingCardBinding
-class MorningCoachingCardFragment : BottomSheetDialogFragment() {
+class DemoMorningCoachingCardFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentMorningCoachingCardBinding? = null
     private val binding get() = _binding!!
@@ -49,6 +49,6 @@ class MorningCoachingCardFragment : BottomSheetDialogFragment() {
 
     companion object {
         fun show(manager: FragmentManager) =
-            MorningCoachingCardFragment().show(manager, "morning_card")
+            DemoMorningCoachingCardFragment().show(manager, "demo_morning_card")
     }
 }

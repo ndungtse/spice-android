@@ -28,10 +28,11 @@ class SpiceBaseApplication : Application(){
             ?.firstOrNull { it.extension == "task" || it.extension == "litertlm" }
         val downloadStrategy = if (existingModel != null) ModelDownloadStrategy.PROVIDED
                                else ModelDownloadStrategy.ON_FIRST_USE
+        val authToken = runCatching { SecuredPreference.getUserDetails().token }.getOrDefault("")
         MicroCoachingSDK.Builder(this)
             .language(Language.BANGLA)
             .backendUrl(BuildConfig.COACHING_BACKEND_URL)
-            .authToken("")
+            .authToken(authToken)
             .enableTelemetry(BuildConfig.ENABLE_COACHING_TELEMETRY)
             .enableChat(true)
             .modelDownloadStrategy(downloadStrategy)
@@ -40,6 +41,9 @@ class SpiceBaseApplication : Application(){
             .huggingFaceToken(BuildConfig.HF_TOKEN)
             .wifiOnlyModelDownload(false)
             .build()
+        if (BuildConfig.DEBUG) {
+            Timber.i("SDK health: %s", MicroCoachingSDK.getInstance().checkHealth())
+        }
     }
 
     /**
