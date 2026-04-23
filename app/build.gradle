@@ -30,6 +30,8 @@ android {
         buildConfigField "String", "COACHING_BACKEND_URL",
             "\"${localProps.getProperty('COACHING_BACKEND_URL', 'http://10.0.2.2:8080')}\""
         buildConfigField "boolean", "ENABLE_COACHING_TELEMETRY", "false"
+        buildConfigField "String", "HF_TOKEN",
+            "\"${localProps.getProperty('HF_TOKEN', '')}\""
     }
 
     signingConfigs {

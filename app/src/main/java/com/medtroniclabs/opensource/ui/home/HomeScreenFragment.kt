@@ -11,7 +11,6 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.medtroniclabs.microcoaching.MicroCoachingSDK
-import com.medtroniclabs.microcoaching.ui.flow.CoachingFlowActivity
 import com.medtroniclabs.opensource.R
 import com.medtroniclabs.opensource.custom.SecuredPreference
 import com.medtroniclabs.opensource.databinding.FragmentHomeScreenBinding
@@ -27,6 +26,7 @@ import com.medtroniclabs.opensource.ui.UIConstants
 import com.medtroniclabs.opensource.ui.home.adapter.ActivitiesAdapter
 import com.medtroniclabs.opensource.ui.landing.LandingViewModel
 import com.medtroniclabs.opensource.ui.screening.GeneralDetailsActivity
+import com.medtroniclabs.opensource.ui.coaching.CoachingAssistantActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -57,12 +57,17 @@ class HomeScreenFragment : BaseFragment(), MenuSelectionListener {
     }
 
     private fun setupCoachingCard() {
-        if (!MicroCoachingSDK.isInitialized()) return
-        val chwId = try { SecuredPreference.getUserId().toString() } catch (e: Exception) { "" }
-        MicroCoachingSDK.getInstance().onHomeScreenShown(chwId)
         binding.btnTodaysCoaching.visibility = View.VISIBLE
         binding.btnTodaysCoaching.setOnClickListener {
-            CoachingFlowActivity.launchLearnModule(requireContext(), chwId)
+            MorningCoachingCardFragment.show(parentFragmentManager)
+        }
+        binding.btnChatAssistant.visibility = View.VISIBLE
+        binding.btnChatAssistant.setOnClickListener {
+            CoachingAssistantActivity.launch(requireContext())
+        }
+        if (MicroCoachingSDK.isInitialized()) {
+            val chwId = try { SecuredPreference.getUserId().toString() } catch (e: Exception) { "" }
+            MicroCoachingSDK.getInstance().onHomeScreenShown(chwId)
         }
     }
 

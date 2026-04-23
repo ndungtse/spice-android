@@ -3,15 +3,23 @@ package com.medtroniclabs.opensource.ui.coaching
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.medtroniclabs.microcoaching.ui.chat.CoachingChatFragment
 import com.medtroniclabs.opensource.R
+import com.medtroniclabs.opensource.ui.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class CoachingAssistantActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class CoachingAssistantActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_coaching_assistant)
+        val contentView = layoutInflater.inflate(R.layout.activity_coaching_assistant, null)
+        setMainContentView(
+            view = contentView,
+            isToolbarVisible = true,
+            title = getString(R.string.chw_assistant),
+            homeAndBackVisibility = Pair(false, true),
+        )
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(

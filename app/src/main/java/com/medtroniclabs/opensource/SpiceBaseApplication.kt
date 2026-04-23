@@ -3,6 +3,8 @@ package com.medtroniclabs.opensource
 import android.app.Application
 import com.medtroniclabs.microcoaching.Language
 import com.medtroniclabs.microcoaching.MicroCoachingSDK
+import com.medtroniclabs.microcoaching.ModelDownloadStrategy
+import com.medtroniclabs.microcoaching.ai.model.ModelProvider
 import com.medtroniclabs.opensource.BuildConfig
 import com.medtroniclabs.opensource.appextensions.isDebug
 import com.medtroniclabs.opensource.custom.SecuredPreference
@@ -21,12 +23,22 @@ class SpiceBaseApplication : Application(){
     }
 
     private fun initCoachingSdk() {
+        val modelDir = getExternalFilesDir(null)
+        val existingModel = modelDir?.listFiles()
+            ?.firstOrNull { it.extension == "task" || it.extension == "litertlm" }
+        val downloadStrategy = if (existingModel != null) ModelDownloadStrategy.PROVIDED
+                               else ModelDownloadStrategy.ON_FIRST_USE
         MicroCoachingSDK.Builder(this)
             .language(Language.BANGLA)
             .backendUrl(BuildConfig.COACHING_BACKEND_URL)
-            .authToken("") // token not yet available; LandingActivity reinitialises with JWT
+            .authToken("")
             .enableTelemetry(BuildConfig.ENABLE_COACHING_TELEMETRY)
             .enableChat(true)
+            .modelDownloadStrategy(downloadStrategy)
+            .modelProviders(listOf(ModelProvider.HuggingFace))
+            .modelPath(existingModel?.absolutePath ?: "")
+            .huggingFaceToken(BuildConfig.HF_TOKEN)
+            .wifiOnlyModelDownload(false)
             .build()
     }
 
