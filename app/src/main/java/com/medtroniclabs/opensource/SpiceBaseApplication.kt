@@ -28,7 +28,7 @@ class SpiceBaseApplication : Application(){
             ?.firstOrNull { it.extension == "task" || it.extension == "litertlm" }
         val downloadStrategy = if (existingModel != null) ModelDownloadStrategy.PROVIDED
                                else ModelDownloadStrategy.ON_FIRST_USE
-        val authToken = runCatching { SecuredPreference.getUserDetails().token }.getOrDefault("")
+        val authToken = runCatching { SecuredPreference.getUserDetails().token }.getOrNull() ?: ""
         MicroCoachingSDK.Builder(this)
             .language(Language.BANGLA)
             .backendUrl(BuildConfig.COACHING_BACKEND_URL)
