@@ -29,6 +29,7 @@ class SpiceBaseApplication : Application(){
         val downloadStrategy = if (existingModel != null) ModelDownloadStrategy.PROVIDED
                                else ModelDownloadStrategy.ON_FIRST_USE
         val authToken = runCatching { SecuredPreference.getUserDetails().token }.getOrNull() ?: ""
+        Timber.i("Auth token: %s", authToken)
         MicroCoachingSDK.Builder(this)
             .language(Language.BANGLA)
             .backendUrl(BuildConfig.COACHING_BACKEND_URL)

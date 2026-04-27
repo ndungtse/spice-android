@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import com.medtroniclabs.microcoaching.MicroCoachingSDK
-import com.medtroniclabs.microcoaching.ui.chat.CoachingChatFragment
+import com.medtroniclabs.microcoaching.ui.coaching.CoachingCardFragment
 import com.medtroniclabs.opensource.R
 import com.medtroniclabs.opensource.appextensions.capitalizeFirstChar
 import com.medtroniclabs.opensource.appextensions.safeClickListener
@@ -370,15 +370,13 @@ class AssessmentSummaryFragment : BaseFragment(), View.OnClickListener {
     }
 
 
-    private fun embedCoachingCard(riskLevel: String?) {
+    private fun embedCoachingCard(@Suppress("UNUSED_PARAMETER") riskLevel: String?) {
         if (!MicroCoachingSDK.isInitialized()) return
-        val patientId = patientDetailViewModel.patientId?.toString() ?: ""
-        val systemContext = riskLevel?.let { "risk_level:$it" } ?: ""
         binding.coachingContainer.visibility = View.VISIBLE
         childFragmentManager.beginTransaction()
             .replace(
                 R.id.coaching_container,
-                CoachingChatFragment.newInstance(patientId = patientId, systemContext = systemContext)
+                CoachingCardFragment.newInstance(scenarioId = ""),
             )
             .commit()
     }

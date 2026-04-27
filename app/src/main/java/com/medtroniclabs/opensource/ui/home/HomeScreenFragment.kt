@@ -10,7 +10,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -65,13 +69,27 @@ class HomeScreenFragment : BaseFragment(), MenuSelectionListener {
         val chwId = runCatching { SecuredPreference.getUserId().toString() }.getOrDefault("")
         sdk.onHomeScreenShown(chwId)
 
+        // Auto-show the morning card as soon as cards are ready — no button tap needed.
+        viewLifecycleOwner.lifecycleScope.launch {
+            sdk.morningCards
+                .filter { it.isNotEmpty() }
+                .take(1)
+                .collect { cards ->
+                    if (isAdded && !isDetached) {
+                        CoachingCardBottomSheet.show(
+                            parentFragmentManager,
+                            scenarioId = cards.first().scenarioId,
+                            autoSpeak = true,
+                        )
+                    }
+                }
+        }
+
+        // Manual tap — re-opens the card if dismissed
         binding.btnTodaysCoaching.visibility = View.VISIBLE
         binding.btnTodaysCoaching.setOnClickListener {
             val cards = sdk.morningCards.value
-            if (cards.isEmpty()) {
-                Toast.makeText(requireContext(), "আজকের পরামর্শ এখনও প্রস্তুত নয়", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (cards.isEmpty()) return@setOnClickListener
             CoachingCardBottomSheet.show(parentFragmentManager, scenarioId = cards.first().scenarioId, autoSpeak = true)
         }
 

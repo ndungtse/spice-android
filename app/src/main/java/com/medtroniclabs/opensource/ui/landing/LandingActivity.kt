@@ -529,7 +529,7 @@ class LandingActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
         val token = SecuredPreference.getString(SecuredPreference.EnvironmentKey.TOKEN.name)
         if (token.isNullOrEmpty() || !MicroCoachingSDK.isInitialized()) return
         MicroCoachingSDK.Builder(applicationContext)
-            .language(Language.BANGLA)
+            .language(MicroCoachingSDK.getInstance().language)
             .backendUrl(BuildConfig.COACHING_BACKEND_URL)
             .authToken(token)
             .enableTelemetry(BuildConfig.ENABLE_COACHING_TELEMETRY)

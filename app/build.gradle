@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "COACHING_BACKEND_URL",
-            "\"${localProps.getProperty('COACHING_BACKEND_URL', 'http://10.0.2.2:8080')}\""
+            "\"${localProps.getProperty('COACHING_BACKEND_URL', 'http://10.0.2.2:8000')}\""
         buildConfigField "boolean", "ENABLE_COACHING_TELEMETRY", "false"
         buildConfigField "String", "HF_TOKEN",
             "\"${localProps.getProperty('HF_TOKEN', '')}\""
@@ -85,6 +85,7 @@ android {
             applicationIdSuffix ".dev"
             ext {
                 server = [debug: "https://stork-cute-chipmunk.ngrok-free.app", release: "https://stork-cute-chipmunk.ngrok-free.app"]
+//                server = [debug: "http://10.0.2.2:8762", release: "http://10.0.2.2:8762"]
                 admin = [debug: "http://192.168.1.72:3000/",release: "http://192.168.1.72:3000/"]
                 salt = [debug: "spice_opensource", release: "spice_opensource"]
             }
@@ -186,7 +187,7 @@ dependencies {
     implementation 'org.bitbucket.b_c:jose4j:0.9.1'
 
     //in-app update
-    implementation 'com.google.android.play:app-update:2.0.1'
+    implementation 'com.google.android.play:app-update:2.1.0'
     implementation 'com.google.android.play:app-update-ktx:2.0.1'
 
     // MicroCoaching SDK (composite build — sourced from ../micro-coaching-android-sdk)
