@@ -5,6 +5,7 @@ import com.medtroniclabs.microcoaching.Language
 import com.medtroniclabs.microcoaching.MicroCoachingSDK
 import com.medtroniclabs.microcoaching.ModelDownloadStrategy
 import com.medtroniclabs.microcoaching.ai.model.ModelProvider
+import com.medtroniclabs.microcoaching.domain.decision.CoachingMode
 import com.medtroniclabs.opensource.BuildConfig
 import com.medtroniclabs.opensource.appextensions.isDebug
 import com.medtroniclabs.opensource.custom.SecuredPreference
@@ -41,6 +42,7 @@ class SpiceBaseApplication : Application(){
             .modelPath(existingModel?.absolutePath ?: "")
             .huggingFaceToken(BuildConfig.HF_TOKEN)
             .wifiOnlyModelDownload(false)
+            .forceMode(CoachingMode.EDGE)
             .build()
         if (BuildConfig.DEBUG) {
             Timber.i("SDK health: %s", MicroCoachingSDK.getInstance().checkHealth())

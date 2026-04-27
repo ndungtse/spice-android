@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import com.medtroniclabs.microcoaching.Language
 import com.medtroniclabs.microcoaching.MicroCoachingSDK
+import com.medtroniclabs.microcoaching.ModelDownloadStrategy
+import com.medtroniclabs.microcoaching.ai.model.ModelProvider
+import com.medtroniclabs.microcoaching.domain.decision.CoachingMode
 import com.medtroniclabs.opensource.ui.coaching.CoachingAssistantActivity
 import com.medtroniclabs.opensource.BuildConfig
 import com.medtroniclabs.opensource.R
@@ -528,12 +531,23 @@ class LandingActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
     private fun reinitCoachingSdkWithToken() {
         val token = SecuredPreference.getString(SecuredPreference.EnvironmentKey.TOKEN.name)
         if (token.isNullOrEmpty() || !MicroCoachingSDK.isInitialized()) return
+        val modelDir = getExternalFilesDir(null)
+        val existingModel = modelDir?.listFiles()
+            ?.firstOrNull { it.extension == "task" || it.extension == "litertlm" }
+        val downloadStrategy = if (existingModel != null) ModelDownloadStrategy.PROVIDED
+                               else ModelDownloadStrategy.ON_FIRST_USE
         MicroCoachingSDK.Builder(applicationContext)
             .language(MicroCoachingSDK.getInstance().language)
             .backendUrl(BuildConfig.COACHING_BACKEND_URL)
             .authToken(token)
             .enableTelemetry(BuildConfig.ENABLE_COACHING_TELEMETRY)
             .enableChat(true)
+            .modelDownloadStrategy(downloadStrategy)
+            .modelProviders(listOf(ModelProvider.HuggingFace))
+            .modelPath(existingModel?.absolutePath ?: "")
+            .huggingFaceToken(BuildConfig.HF_TOKEN)
+            .wifiOnlyModelDownload(false)
+            .forceMode(CoachingMode.EDGE)
             .build()
         MicroCoachingSDK.getInstance().syncCoordinator.schedulePeriodic()
         binding.navView.menu.findItem(R.id.chwAssistant)?.isVisible = true

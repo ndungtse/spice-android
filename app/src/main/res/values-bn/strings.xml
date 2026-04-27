@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SPICE</string>
     <string name="loading">লোড হচ্ছে…</string>
+    <string name="learn_and_grow">শিখুন ও বেড়ে উঠুন</string>
     <!--    // login related strings-->
     <string name="welcome">স্বাগত</string>
     <string name="login_to_your_account">আপনার এ্যাকাউন্টে লগ ইন করা</string>

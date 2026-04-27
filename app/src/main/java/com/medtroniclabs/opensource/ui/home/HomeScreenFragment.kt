@@ -34,6 +34,7 @@ import com.medtroniclabs.opensource.ui.UIConstants
 import com.medtroniclabs.opensource.ui.home.adapter.ActivitiesAdapter
 import com.medtroniclabs.opensource.ui.landing.LandingViewModel
 import com.medtroniclabs.opensource.ui.screening.GeneralDetailsActivity
+import com.medtroniclabs.microcoaching.ui.flow.CoachingFlowActivity
 import com.medtroniclabs.opensource.ui.coaching.CoachingAssistantActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -85,7 +86,7 @@ class HomeScreenFragment : BaseFragment(), MenuSelectionListener {
                 }
         }
 
-        // Manual tap — re-opens the card if dismissed
+        // Today's Coaching — (re-)opens the morning coaching card
         binding.btnTodaysCoaching.visibility = View.VISIBLE
         binding.btnTodaysCoaching.setOnClickListener {
             val cards = sdk.morningCards.value
@@ -93,6 +94,13 @@ class HomeScreenFragment : BaseFragment(), MenuSelectionListener {
             CoachingCardBottomSheet.show(parentFragmentManager, scenarioId = cards.first().scenarioId, autoSpeak = true)
         }
 
+        // Learn & Grow — first time: coach mark → slides → UC-1 quiz; subsequent: module list
+        binding.btnLearnAndGrow.visibility = View.VISIBLE
+        binding.btnLearnAndGrow.setOnClickListener {
+            CoachingFlowActivity.launchLearn(requireContext(), chwId)
+        }
+
+        // CHW AI chat
         binding.btnChatAssistant.visibility = View.VISIBLE
         binding.btnChatAssistant.setOnClickListener {
             if (sdk.modelManager.isModelPresent()) {
